@@ -9,18 +9,44 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-#from webdriver_manager.chrome import ChromeDriverManager
+# from webdriver_manager.chrome import ChromeDriverManager
+from flask import Flask, request, jsonify
+app = Flask(__name__)
 
 
-def Check(dopuser, doppass, lists, debates):
+# def return_pred():
+#     return Check()
 
-    lists = lists
+
+@app.route("/")
+def index():
+    return'<h1>FLASK APP IS RUNNING</h1>'
+
+
+@app.route('/api/flower', methods=['POST'])
+def pred():
+    # String agentuser, agentpass, lists, debate
+    content = request.json
+    results = CheckList(content)
+    return jsonify(results)
+
+
+if __name__ == '__main__':
+    app.run()
+
+
+def CheckList(jsondat):
+    lists = jsondat['lists']
+    debates = jsondat['debates']
+    dopuser = jsondat['dopuser']
+    doppass = jsondat['doppass']
+    #lists = lists
 
     debates = debates.split(",")
     l = []
     leng = lists.split(",")
 # hider opt
-    #driver_exe = 'chromedriver'
+    # driver_exe = 'chromedriver'
     options = Options()
 
     options.add_argument("--headless")
@@ -124,9 +150,9 @@ def Check(dopuser, doppass, lists, debates):
             # click on save
                     driver.find_element_by_name("Action.ADD_TO_LIST").click()
                     time.sleep(2)
-                #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "Accounts")))
+                # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "Accounts")))
                 else:
-                    #pg = i//10
+                    # pg = i//10
                     driver.find_element_by_name(
                         "CustomAgentRDAccountFG.SelectedAgentRDActSummaryListing_REQUESTED_PAGE_NUMBER").send_keys(str((i//10)+1))
                     driver.find_element_by_name(
@@ -140,7 +166,7 @@ def Check(dopuser, doppass, lists, debates):
                         "CustomAgentRDAccountFG.RD_INSTALLMENT_NO").send_keys(str(debates[i]))
             # click on save
                     driver.find_element_by_name("Action.ADD_TO_LIST").click()
-                #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "Accounts")))
+                # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "Accounts")))
 
 
 # ------------------
@@ -166,32 +192,58 @@ def Check(dopuser, doppass, lists, debates):
     return bn
 
 
-if __name__ == "__main__":
-    try:
-        l = []
-        k = ''
-        j = ''
-        h = int(input('Range : '))
-#p = []
-        for _ in range(h):
-            y = input('Accnum : ')
-            g = input('Debate : ')
-            l.append([y, g])
-        new_list = sorted(l, key=lambda x: x[0])
-        print(new_list)
-        for n in range(len(new_list)):
-            k = k+str(new_list[n][0])+','
-            j = j+str(new_list[n][1])+','
+# if __name__ == "__main__":
+#     try:
+#         Check("DOP.MI5152310100002", "siripost@123", 'hh', 'hjgh')
+#         #         l = []
+#         #         k = ''
+#         #         j = ''
+#         #         h = int(input('Range : '))
+#         # #p = []
+#         #         for _ in range(h):
+#         #             y = input('Accnum : ')
+#         #             g = input('Debate : ')
+#         #             l.append([y, g])
+#         #         new_list = sorted(l, key=lambda x: x[0])
+#         #         print(new_list)
+#         #         for n in range(len(new_list)):
+#         #             k = k+str(new_list[n][0])+','
+#         #             j = j+str(new_list[n][1])+','
 
-        print(k[:-1])
-        print(j[:-1])
-        # listnumbers =
-    #listnumbers = input('Enter Account numbers : ')
-    #debateslist = input('Enter Debates  : ')
-        print(Check("DOP.MI5152310100002", "siripost@123", k[: -1], j[: -1]))
-    except:
-        print("Something Error occured")
+#         #         print(k[:-1])
+#         #         print(j[:-1])
+#         # listnumbers =
+#         #listnumbers = input('Enter Account numbers : ')
+#         #debateslist = input('Enter Debates  : ')
+#         #print(Check("DOP.MI5152310100002", "siripost@123", k[: -1], j[: -1]))
+#     except Exception as e:
+#         print(e)
+#         print("Something Error occured")
 
 
 # printpreview
 # HREF_CustomAgentRDAccountFG.ACCOUNT_NUMBER_ALL_ARRAY[1]
+# l = []
+# k = ''
+# j = ''
+# h = int(input('Range : '))
+# # p = []
+# for _ in range(h):
+#     y = input('Accnum : ')
+#     g = input('Debate : ')
+#     l.append([y, g])
+#     new_list = sorted(l, key=lambda x: x[0])
+#     print(new_list)
+# for n in range(len(new_list)):
+#     k = k+str(new_list[n][0])+','
+#     j = j+str(new_list[n][1])+','
+
+#     print(k[:-1])
+#     print(j[:-1])
+# Check("DOP.MI5152310100002", "siripost@123", k[: -1], j[: -1])
+# {
+#    "lists":"4357532566,020004962465",
+#    "debates":"1,2",
+#    "doppass":"siripost@123",
+#    "dopuser":"DOP.MI5152310100002"
+# }
